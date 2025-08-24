@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-q9mmabhj@zahey8c@6j@=7(v1d2n0lpqqigq=a4hx0lx+q+e7q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["https://multilayerperceptrondemoapp-cdggcedubkgwhpce.scm.canadacentral-01.azurewebsites.net"]
 
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

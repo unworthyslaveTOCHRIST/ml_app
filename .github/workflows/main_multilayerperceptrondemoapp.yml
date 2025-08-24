@@ -2,7 +2,7 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 # More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
 
-name: Build and deploy Python app to Azure Web App - roadAnomaly4ChristAlone
+name: Build and deploy Python app to Azure Web App - multilayerPerceptronDemoApp
 
 on:
   push:
@@ -22,40 +22,29 @@ jobs:
       - name: Set up Python version
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11.2'
+          python-version: '3.9'
 
-      - name: Create virtual environment
-        run: python -m venv venv
-
+      - name: Create and start virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+      
       - name: Install dependencies
-        run: |
-          source venv/bin/activate
-          pip install -r requirements.txt
-      - name: Collect static files
-        run: |
-          source venv/bin/activate
-          python manage.py collectstatic --noinput
+        run: pip install -r requirements.txt
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
-      - name: Zip Django project for deployment
-        run: |
-          zip -r release.zip . \
-          -x "venv/*" \
-          -x ".git/*" \
-          -x ".github/*" \
-          -x "__pycache__/*"
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
         with:
           name: python-app
           path: |
-            release.zip
+            .
             !venv/
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    
     permissions:
       id-token: write #This is required for requesting the JWT
       contents: read #This is required for actions/checkout
@@ -65,25 +54,18 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: python-app
-
-      - name: Unzip artifact for deployment
-        run: unzip -o release.zip -d .
-
-      - name: Debug - list workspace contents
-        run: ls -laR
-
       
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_23428C1EB8EF4AABB42E4234B6E6C942 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_1F362E8D91C446A5AD27CCE192F0637B }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_6F74967E4E6644BBAA3EB341317AB626 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_8562B59EDC5D4BCC8F4BC37592A9D3B3 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_8EB22F19FFAC497EA677397FD39D5D99 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_10C9C565B3ED45BE864E1934B1ED6B80 }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'roadAnomaly4ChristAlone'
+          app-name: 'multilayerPerceptronDemoApp'
           slot-name: 'Production'
-          package: release.zip
+          

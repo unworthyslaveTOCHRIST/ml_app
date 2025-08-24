@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Iris MLP Classifier</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        .slider-container { margin: 20px 0; }
+        .gallery { display: flex; flex-wrap: wrap; gap: 10px; }
+        .gallery img { height: 100px; border: 1px solid #ccc; padding: 5px; }
+    </style>
+</head>
+<body>
+    <h2>Iris Classifier with MLP</h2>
+    <div class="slider-container">
+        <label for="slider">Training Intensity:</label>
+        <input type="range" id="slider" min="0" max="1" step="0.1" value="0.5">
+    </div>
+    <button onclick="trainModel()">Train Model</button>
+    <p id="status"></p>
+    <h3>Iris Image Preview</h3>
+    <div class="gallery">
+        {% for img in images %}
+            <img src="/static/iris_images/{{ img }}" alt="Iris Image">
+        {% endfor %}
+    </div>
+    <script>
+        function trainModel() {
+            const val = document.getElementById('slider').value;
+            fetch(`/predict?slider_value=${val}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('status').innerText = data.message + " | Loss: " + data.loss.toFixed(4);
+                });
+        }
+    </script>
+</body>
+</html>
